@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USERNAME}}:$(date +%s)
+      
+    - name: Push built image to docker hub
+      run: |
+       docker login -u ${{secrets.DOCKER_USERNAME}} --password ${{secrets.DOCKER_PASSWORD}}
+       docker push ${{secrets.DOCKER_USERNAME}}/caffeine-notification
