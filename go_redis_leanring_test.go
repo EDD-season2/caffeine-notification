@@ -7,7 +7,7 @@ import (
 	"github.com/go-redis/redis/v7"
 )
 
-func TestNewClient(t *testing.T) {
+func _TestNewClient(t *testing.T) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
@@ -21,7 +21,7 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
-func TestClient(t *testing.T) {
+func _TestClient(t *testing.T) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
@@ -49,7 +49,7 @@ func TestClient(t *testing.T) {
 	t.Log("otherKey", val2)
 }
 
-func TestAppend(t *testing.T) {
+func _TestAppend(t *testing.T) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",

@@ -1,14 +1,18 @@
 package main
 
 import (
+	"os"
+
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
 
-	repository := NewRedisRepository("localhost:6379", "", 0)
-	apiWrapper := NewFcmApiWrapper("")
+	redisAddr := os.Getenv("REDIS_ADDR")
+	authHeader := os.Getenv("AUTH_HEADER")
+	repository := NewRedisRepository(redisAddr, "", 0)
+	apiWrapper := NewFcmApiWrapper(authHeader)
 	service := NewNotificationService(apiWrapper, repository)
 	subscriptionCtrl := NewSubscriptionController(*service)
 	sendCtrl := NewNotificationSendController(*service)
