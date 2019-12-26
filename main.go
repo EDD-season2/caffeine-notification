@@ -19,6 +19,6 @@ func main() {
 	r.POST("/shops/:shopId/subscribe", subscriptionCtrl.HandleShopSubscribe)
 	r.POST("/customers/:customerId/subscribe", subscriptionCtrl.HandleCustomerSubscribe)
 	r.POST("/shops/:shopId/send", sendCtrl.HandleSendShopNotification)
-	r.POST("/cusotmers/:customerId/send", sendCtrl.HandleSendCustomerNotification)
+	r.POST("/customers/:customerId/send", sendCtrl.HandleSendCustomerNotification)
 	r.Run("0.0.0.0:8000")
 }
