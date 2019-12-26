@@ -3,8 +3,8 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -23,9 +23,17 @@ type fCMRequestData struct {
 	Message string `json:"message"`
 }
 
+type fCMError struct {
+	StatusCode int
+	Body       string
+}
+
+func (e *fCMError) Error() string {
+	return fmt.Sprintf("Error on notfication request to FCM: \nStatus %d\nBody>\n%s", e.StatusCode, e.Body)
+}
+
 // Send sends push notification request
 func (w *FCMAPIWrapper) Send(to string, message string) error {
-	log.Println("to: ", to)
 	data := fCMRequestData{message}
 	body := fCMRequestBody{to, data}
 	byteData, err := json.Marshal(body)
@@ -41,15 +49,13 @@ func (w *FCMAPIWrapper) Send(to string, message string) error {
 		return err
 	}
 	if res.StatusCode != 200 {
-		log.Println("Reuqest is handled incorrectly")
-		log.Println(res.StatusCode, res.Header)
+		bodyBytes, _ := ioutil.ReadAll(res.Body)
+		err = &fCMError{
+			StatusCode: res.StatusCode,
+			Body:       string(bodyBytes),
+		}
 	}
-	log.Println("body: ", string(byteData))
-	resBytes, _ := ioutil.ReadAll(res.Body)
-	reqBytes, _ := ioutil.ReadAll(req.Body)
-	log.Println("reqBody: ", string(reqBytes))
-	log.Println("resBody: ", string(resBytes))
-	return nil
+	return err
 }
 
 func NewFcmApiWrapper(authorization string) *FCMAPIWrapper {

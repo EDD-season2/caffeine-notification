@@ -1,10 +1,11 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"log"
+	"net/http"
 
-import "net/http"
-
-import "log"
+	"github.com/gin-gonic/gin"
+)
 
 // NotificationSendRequest represents request for send notification both shop and customer
 type NotificationSendRequest struct {
@@ -21,8 +22,10 @@ func (ctrl *NotificationSendController) HandleSendShopNotification(c *gin.Contex
 	shopID := c.Param("shopId")
 	err := ctrl.service.sendShop(shopID, req.Message)
 	if err != nil {
-		log.Fatalln("Error occurred while send noti. to shop: ", err.Error())
-		c.JSON(http.StatusInternalServerError, err.Error())
+		log.Println("Error occurred while send noti. to shop: ", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{})
@@ -34,8 +37,10 @@ func (ctrl *NotificationSendController) HandleSendCustomerNotification(c *gin.Co
 	customerID := c.Param("customerId")
 	err := ctrl.service.sendCustomer(customerID, req.Message)
 	if err != nil {
-		log.Fatalln("Error occurred while send noti. to customer: ", err.Error())
-		c.JSON(http.StatusInternalServerError, err.Error())
+		log.Println("Error occurred while send noti. to customer: ", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{})
